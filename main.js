@@ -1,16 +1,17 @@
-let computerNum = 0
-let playButton = document.getElementById("play-button")
+let drawButton = document.getElementById("draw")
 let userInput = document.getElementById("user-input")
-let resultArea = document.getElementById("result-area")
-let chanceArea = document.getElementById("chance-area")
 let resetButton = document.getElementById("reset-button")
+let resultArea = document.getElementById("type-num")
+let chanceArea = document.getElementById("chance-area")
 let chances = 5;
 let gameOver = false;
-let history = [];
+let history = []
 
-playButton.addEventListener("click", play)
+drawButton.addEventListener("click", play)
 resetButton.addEventListener("click", reset)
-userInput.addEventListener("focus", function(){userInput.value = ""});
+userInput.addEventListener("focus", function(){userInput.value=""})
+
+computerNum = 0
 
 function pickRandomNum() {
     computerNum = Math.floor(Math.random()*100)+1;
@@ -19,45 +20,48 @@ function pickRandomNum() {
 
 function play() {
     let userValue = userInput.value;
-
     if(userValue < 1 || userValue > 100) {
-        resultArea.textContent = "1과 100사이 숫자를 입력해 주세요.";
-        return;
+        resultArea.textContent = "1과 100사이 숫자 입력"
+    return;
+    }
+    if(history.includes(userValue)) {
+        resultArea.textContent = "이미 입력하신 값 입니다."
+        return ;
     }
 
-    if (history.includes(userValue)) {
-        resultArea.textContent = "이미 입력한 숫자입니다. 다른 숫자를 입력해 주세요.";
-        return;
-    }
+    chances--; 
+    chanceArea.textContent = `남은 기회는 ${chances}번 입니다.`
 
-    chances--;
-    chanceArea.textContent = `남은기회:${chances}번`;
-    console.log("chance", chances)
-
-
-    if(userValue < computerNum) {
-        resultArea.textContent = "UP"
-    }else if(userValue > computerNum){
+    if(userValue > computerNum) {
         resultArea.textContent = "DOWN"
-    }else {
-        resultArea.textContent="CORRECT"
-        gameOver=true;
+    } else if(userValue < computerNum) {
+        resultArea.textContent = "UP"
+    } else {
+        resultArea.textContent = "CORRECT!!!"
+        gameOver = true;
     }
 
-    history.push(userValue);
-    
+    history.push(userValue)
+
     if(chances < 1) {
         gameOver = true;
     }
 
     if(gameOver == true) {
-        playButton.disabled = true;
+        drawButton.disabled = true;
     }
+
 }
 
 function reset() {
-    userInput.value = "";
-    pickRandomNum();
-    resultArea.textContent = "결과값이 여기 나옵니다."
+    userInput.value = ""
+    pickRandomNum()
+    resultArea.textContent = "결과값이 나옵니다."
+    gameOver = false;
+    drawButton.disabled = false;
+    chances = 5;
+    chanceArea.textContent = `남은 기회는 ${chances}번 입니다.`
+    history = [];
 }
+
 pickRandomNum();
